@@ -71,7 +71,7 @@ textarea{min-height:140px;resize:vertical;font-size:14px}
 
 /* ===== welcome ===== */
 .welcome{background:var(--teal-d);color:#fff;border-radius:22px;padding:28px 22px 0;overflow:hidden;position:relative}
-.welcome h2{font-size:26px;color:#fff;margin:0}
+.welcome h2{font-size:26px;color:#fff;margin:0 0 22px}
 .welcome p{margin:6px 0 22px;opacity:.85}
 .welcome .weave{height:21px;margin:0 -22px;background:var(--sadu) repeat-x;background-size:54px 21px;opacity:.95}
 .roles{display:grid;gap:12px;margin-top:16px}
@@ -397,11 +397,10 @@ function renderRoles(){
   <div class="narrow">
     <div class="welcome">
       <h2>رصد الغياب عن بعد</h2>
-      <p>كل حصة تُرصد في أقل من دقيقة، والإدارة ترى الصورة كاملة لحظة بلحظة.</p>
       <div class="weave"></div>
     </div>
     <div class="roles">
-      <button class="role" data-r="teacher"><span class="ic">${ICON.teacher}</span><span><b>أنا معلم</b><span>رصد غياب حصصي اليوم</span></span><span class="go">${ICON.chev}</span></button>
+      <button class="role" data-r="teacher"><span class="ic">${ICON.teacher}</span><span><b>المعلم</b><span>رصد غياب حصصي اليوم</span></span><span class="go">${ICON.chev}</span></button>
       <button class="role" data-r="admin"><span class="ic">${ICON.admin}</span><span><b>الإدارة</b><span>المتابعة والحصر والتقارير</span></span><span class="go">${ICON.chev}</span></button>
     </div>
   </div>`;
