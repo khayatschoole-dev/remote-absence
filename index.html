@@ -176,7 +176,8 @@ button.tl-card:hover{border-color:var(--teal)}
 .tabs{display:flex;gap:6px;margin-bottom:18px;overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:5px}
 .tab{border:0;background:transparent;padding:9px 16px;color:var(--grey);font-weight:600;border-radius:10px;white-space:nowrap}
 .tab.on{background:var(--teal-d);color:#fff}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.datebar>div:first-child{min-width:200px}
 .kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
 .kpi::before{content:"";position:absolute;inset-inline-start:0;top:16px;bottom:16px;width:4px;border-radius:0 4px 4px 0;background:var(--teal-m)}
 .kpi .v{font-family:var(--kufi);font-size:30px;font-weight:700;color:var(--teal-d);line-height:1.3}
@@ -186,7 +187,7 @@ button.tl-card:hover{border-color:var(--teal)}
 .meter{height:8px;background:var(--bg);border-radius:9px;overflow:hidden;margin-top:10px}
 .meter i{display:block;height:100%;background:var(--green);border-radius:9px}
 
-.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:#fff}
+.tbl-wrap{max-width:100%;overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:#fff}
 table{border-collapse:collapse;width:100%;font-size:14.5px}
 th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
 th{background:#F5F8F7;font-weight:600;color:var(--teal-d);position:sticky;top:0}
@@ -209,7 +210,7 @@ td.num,th.num{text-align:center}
 .bar .t{height:16px;background:var(--bg);border-radius:6px;overflow:hidden}
 .bar .t i{display:block;height:100%;background:linear-gradient(90deg,var(--teal-m),var(--teal));border-radius:6px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media (max-width:760px){.two{grid-template-columns:1fr}}
+@media (max-width:760px){.two{grid-template-columns:minmax(0,1fr)}}
 .linkish{border:0;background:none;color:var(--teal-d);font-weight:600;padding:0;text-decoration:underline;text-decoration-color:var(--teal-m);text-underline-offset:4px}
 
 .modal{position:fixed;inset:0;background:rgba(4,57,55,.5);display:grid;place-items:end center;z-index:50;padding:0}
@@ -257,6 +258,7 @@ const CONFIG = {
   SUPABASE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxcHBhY250c2dnZXl4ZmtvYmpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Mjg1NjYsImV4cCI6MjA5MDUwNDU2Nn0.i2kNNTgI7JgJ7bN1Sudie543s_84YYDuPc9rqbSoXJY",
   TEACHER_CODE: "4040",
   ADMIN_CODE: "5050",
+  VIEWER_CODE: "6060",
   SCHOOL: "متوسطة الشيخ عبدالله خياط",
   OFFICE: "إدارة تعليم مكة المكرمة",
   PERIODS: 7
@@ -368,7 +370,7 @@ function start(){
     app.innerHTML=`<div class="card narrow" style="margin:auto"><h3>لم يتم ربط قاعدة البيانات بعد</h3><p class="muted">ضع رابط المشروع والمفتاح العام في أعلى الملف (CONFIG).</p></div>`; return;
   }
   const role = ls.get("ra_role");
-  if(role==="admin") return go("admin");
+  if(role==="admin" || role==="viewer") return go("admin");
   if(role==="teacher") return ls.get("ra_teacher") ? go("teacher") : go("teacherPick");
   go("roles");
 }
@@ -387,6 +389,7 @@ const ICON = {
   teacher:`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v10H4z"/><path d="M8 19h8M12 15v4"/><path d="m8 10 2.5 2.5L16 8"/></svg>`,
   admin:`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>`,
   chev:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m15 6-6 6 6 6"/></svg>`,
+  eye:`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>`,
   tick:`<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`
 };
 
@@ -402,10 +405,12 @@ function renderRoles(){
     <div class="roles">
       <button class="role" data-r="teacher"><span class="ic">${ICON.teacher}</span><span><b>المعلم</b><span>رصد غياب حصصي اليوم</span></span><span class="go">${ICON.chev}</span></button>
       <button class="role" data-r="admin"><span class="ic">${ICON.admin}</span><span><b>الإدارة</b><span>المتابعة والحصر والتقارير</span></span><span class="go">${ICON.chev}</span></button>
+      <button class="role" data-r="viewer"><span class="ic">${ICON.eye}</span><span><b>الموجه الطلابي</b><span>اطلاع وطباعة فقط</span></span><span class="go">${ICON.chev}</span></button>
     </div>
   </div>`;
   app.querySelectorAll(".role").forEach(b=>b.onclick=()=>{
     if(b.dataset.r==="teacher") go("teacherCode");
+    else if(b.dataset.r==="viewer") askCode("رمز الموجه الطلابي", CONFIG.VIEWER_CODE, ()=>{ ls.set("ra_role","viewer"); A.tab="today"; go("admin"); });
     else askCode("رمز الإدارة", CONFIG.ADMIN_CODE, ()=>{ ls.set("ra_role","admin"); go("admin"); });
   });
 }
@@ -609,11 +614,13 @@ let A = { tab:"today", date:isoDate(new Date()), from:"", to:"", cls:"", q:"" };
 (function initRange(){ const t=new Date(); const f=new Date(t); f.setDate(t.getDate()-((t.getDay()+7)%7)); A.from=isoDate(f); A.to=isoDate(t); })();
 
 async function renderAdmin(){
-  setHeader("لوحة الإدارة", `<button class="btn btn-ghost btn-sm" id="outBtn">خروج</button>`);
+  const viewer = ls.get("ra_role")==="viewer";
+  if(viewer && A.tab==="data") A.tab="today";
+  setHeader(viewer?"الموجه الطلابي – اطلاع وطباعة":"لوحة الإدارة", `<button class="btn btn-ghost btn-sm" id="outBtn">خروج</button>`);
   $("#outBtn").onclick=()=>{ ls.del("ra_role"); go("roles"); };
   loadingView();
   try{ await loadBase(true); }catch(e){ return errorView(e); }
-  const tabs=[["today","متابعة اليوم"],["tally","حصر الغياب"],["reports","التقارير"],["data","الطلاب والجدول"]];
+  const tabs=[["today","متابعة اليوم"],["tally","حصر الغياب"],["reports","التقارير"],["data","الطلاب والجدول"]].filter(t=>!(viewer&&t[0]==="data"));
   app.innerHTML=`<nav class="tabs">${tabs.map(([k,v])=>`<button class="tab ${A.tab===k?"on":""}" data-t="${k}">${v}</button>`).join("")}</nav><section id="pane"></section>`;
   app.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{ A.tab=b.dataset.t; renderAdmin(); });
   const pane=$("#pane");
@@ -621,7 +628,7 @@ async function renderAdmin(){
     if(A.tab==="today") await paneToday(pane);
     else if(A.tab==="tally") await paneTally(pane);
     else if(A.tab==="reports") paneReports(pane);
-    else paneData(pane);
+    else if(!viewer) paneData(pane);
   }catch(e){ pane.innerHTML=`<div class="card"><h3>حدث خطأ</h3><p class="muted">${esc(e.message||e)}</p></div>`; console.error(e); }
 }
 
